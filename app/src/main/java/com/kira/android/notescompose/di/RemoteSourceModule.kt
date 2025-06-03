@@ -1,5 +1,6 @@
 package com.kira.android.notescompose.di
 
+import com.kira.android.notescompose.features.notes.NoteService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,7 +12,7 @@ import javax.inject.Singleton
 class RemoteSourceModule {
     @Provides
     @Singleton
-    fun provideMovieRemoteSource(
+    fun provideNoteRemoteSource(
         noteService: NoteService
-    ) = NoteRemoteSource(movieService = noteService)
+    ) = NoteRemoteSource(noteService = noteService)
 }

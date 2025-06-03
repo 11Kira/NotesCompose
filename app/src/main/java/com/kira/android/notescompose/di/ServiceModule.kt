@@ -1,5 +1,6 @@
 package com.kira.android.notescompose.di
 
+import com.kira.android.notescompose.features.notes.NoteService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
