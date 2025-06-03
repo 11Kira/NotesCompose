@@ -1,4 +1,4 @@
-package com.kira.android.notescompose.feature.notes
+package com.kira.android.notescompose.features.notes
 
 import com.google.gson.annotations.SerializedName
 

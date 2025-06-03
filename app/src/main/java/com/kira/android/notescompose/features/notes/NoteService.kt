@@ -1,7 +1,6 @@
-package com.kira.android.notescompose.feature.notes
+package com.kira.android.notescompose.features.notes
 
 import com.google.gson.JsonObject
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

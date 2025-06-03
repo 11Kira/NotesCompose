@@ -1,5 +1,7 @@
 package com.kira.android.notescompose.di
 
+import com.kira.android.notescompose.features.notes.NoteRemoteSource
+import com.kira.android.notescompose.features.notes.NoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,5 +15,5 @@ class RepositoryModule {
     @Singleton
     fun provideNoteRepository(
         noteRemoteSource: NoteRemoteSource
-    ) = provideNoteRepository(remoteSource = noteRemoteSource)
+    ) = NoteRepository(noteRemoteSource = noteRemoteSource)
 }

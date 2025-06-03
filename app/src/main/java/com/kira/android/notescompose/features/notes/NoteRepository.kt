@@ -1,4 +1,4 @@
-package com.kira.android.notescompose.feature.notes
+package com.kira.android.notescompose.features.notes
 
 import com.google.gson.JsonObject
 import javax.inject.Inject
@@ -15,7 +15,7 @@ class NoteRepository @Inject constructor(
     }
 
     suspend fun saveNote(body: JsonObject): NoteResult {
-        return noteRemoteSource.updateNote(body)
+        return noteRemoteSource.saveNote(body)
     }
 
     suspend fun updateNote(body: JsonObject): NoteResult {
