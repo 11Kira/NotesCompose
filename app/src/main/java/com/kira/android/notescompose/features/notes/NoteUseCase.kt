@@ -10,19 +10,19 @@ class NoteUseCase @Inject constructor(
         return noteRepository.getAllNotes()
     }
 
-    suspend fun getNoteById(id: String): NoteResult {
-        return noteRepository.getNoteById(id = id)
+    suspend fun getNoteById(noteId: String): NoteResult {
+        return noteRepository.getNoteById(noteId = noteId)
     }
 
-    suspend fun saveNote(body: JsonObject): NoteResult {
-        return noteRepository.updateNote(body)
+    suspend fun saveNote(noteId: String, body: JsonObject): NoteResult {
+        return noteRepository.updateNote(noteId = noteId, body)
     }
 
-    suspend fun updateNote(body: JsonObject): NoteResult {
-        return noteRepository.updateNote(body = body)
+    suspend fun updateNote(noteId: String, body: JsonObject): NoteResult {
+        return noteRepository.updateNote(noteId = noteId, body = body)
     }
 
-    suspend fun deleteNote(id: String): NoteResult {
-        return noteRepository.deleteNote(id)
+    suspend fun deleteNote(noteId: String): NoteResult {
+        return noteRepository.deleteNote(noteId)
     }
 }
