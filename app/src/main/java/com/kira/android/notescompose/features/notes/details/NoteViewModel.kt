@@ -23,6 +23,21 @@ class NoteViewModel @Inject constructor(
     private val mutableNoteState: MutableSharedFlow<NoteState> = MutableSharedFlow()
     val noteState = mutableNoteState.asSharedFlow()
 
+    fun saveNewNote(title: String, body: String) {
+        viewModelScope.launch(CoroutineExceptionHandler { _, error ->
+            runBlocking {
+                mutableNoteState.emit(NoteState.ShowError(error))
+            }
+        }) {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("title", title)
+            jsonObject.addProperty("body", body)
+
+            val result = useCase.saveNote(jsonObject)
+            mutableNoteState.emit(NoteState.SetNote(result))
+        }
+    }
+
     fun getNoteById(noteId: String) {
         viewModelScope.launch(CoroutineExceptionHandler { _, error ->
             runBlocking {

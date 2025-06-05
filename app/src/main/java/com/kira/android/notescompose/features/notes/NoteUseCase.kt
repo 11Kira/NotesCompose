@@ -14,8 +14,8 @@ class NoteUseCase @Inject constructor(
         return noteRepository.getNoteById(noteId = noteId)
     }
 
-    suspend fun saveNote(noteId: String, body: JsonObject): NoteResult {
-        return noteRepository.updateNote(noteId = noteId, body)
+    suspend fun saveNote(body: JsonObject): NoteResult {
+        return noteRepository.saveNote(body)
     }
 
     suspend fun updateNote(noteId: String, body: JsonObject): NoteResult {

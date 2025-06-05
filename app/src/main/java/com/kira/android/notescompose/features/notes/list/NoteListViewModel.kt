@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kira.android.notescompose.features.notes.NoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -26,6 +27,17 @@ class NoteListViewModel @Inject constructor(
         }) {
             val result = useCase.getAllNotes()
             mutableNoteListState.emit(NoteListState.SetNotesList(result))
+        }
+    }
+
+    fun deleteNoteById(noteId: String) {
+        viewModelScope.launch(CoroutineExceptionHandler { _, error ->
+            runBlocking {
+                mutableNoteListState.emit(NoteListState.ShowError(error))
+            }
+        }) {
+            async { useCase.deleteNote(noteId) }.await()
+            getAllNotes()
         }
     }
 }
