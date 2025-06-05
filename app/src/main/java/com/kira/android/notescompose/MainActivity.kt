@@ -17,8 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.kira.android.notescompose.features.notes.list.NoteListScreen
 import com.kira.android.notescompose.ui.theme.NotesComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +46,7 @@ fun MainScreenView() {
             .consumeWindowInsets(contentPadding)
             .systemBarsPadding()
         ) {
-
+            NoteListScreen()
         }
     }
 }

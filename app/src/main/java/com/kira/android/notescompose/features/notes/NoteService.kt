@@ -9,26 +9,26 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface NoteService {
-    @GET("/notes")
+    @GET("notes")
     suspend fun getAllNotes(): List<NoteResult>
 
-    @GET("/notes/{id}")
+    @GET("notes/{id}")
     suspend fun getNoteById(
         @Path("id") id: String,
     ): NoteResult
 
-    @POST("/notes")
+    @POST("notes")
     suspend fun saveNote(
         @Body body: JsonObject
     ): NoteResult
 
-    @PUT("/notes/{id}")
+    @PUT("notes/{id}")
     suspend fun updateNote(
         @Path("id") id: String,
         @Body body: JsonObject
     ): NoteResult
 
-    @DELETE("/notes/{id}")
+    @DELETE("notes/{id}")
     suspend fun deleteNote(
         @Path("id") id: String
     ): NoteResult
