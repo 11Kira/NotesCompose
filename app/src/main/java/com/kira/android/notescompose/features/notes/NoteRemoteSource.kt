@@ -10,15 +10,15 @@ class NoteRemoteSource @Inject constructor(
 ) {
     suspend fun getAllNotes() = withContext(Dispatchers.IO) { noteService.getAllNotes() }
 
-    suspend fun getNoteById(id: String) =
-        withContext(Dispatchers.IO) { noteService.getNoteById(id = id) }
+    suspend fun getNoteById(noteId: String) =
+        withContext(Dispatchers.IO) { noteService.getNoteById(id = noteId) }
 
-    suspend fun deleteNote(id: String) =
-        withContext(Dispatchers.IO) { noteService.deleteNote(id = id) }
+    suspend fun deleteNote(noteId: String) =
+        withContext(Dispatchers.IO) { noteService.deleteNote(id = noteId) }
 
     suspend fun saveNote(body: JsonObject) =
         withContext(Dispatchers.IO) { noteService.saveNote(body = body) }
 
-    suspend fun updateNote(body: JsonObject) =
-        withContext(Dispatchers.IO) { noteService.updateNote(body = body) }
+    suspend fun updateNote(noteId: String, body: JsonObject) =
+        withContext(Dispatchers.IO) { noteService.updateNote(id = noteId, body = body) }
 }

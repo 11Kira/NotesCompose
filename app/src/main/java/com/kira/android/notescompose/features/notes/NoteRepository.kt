@@ -10,19 +10,19 @@ class NoteRepository @Inject constructor(
         return noteRemoteSource.getAllNotes()
     }
 
-    suspend fun getNoteById(id: String): NoteResult {
-        return noteRemoteSource.getNoteById(id = id)
+    suspend fun getNoteById(noteId: String): NoteResult {
+        return noteRemoteSource.getNoteById(noteId = noteId)
     }
 
     suspend fun saveNote(body: JsonObject): NoteResult {
         return noteRemoteSource.saveNote(body)
     }
 
-    suspend fun updateNote(body: JsonObject): NoteResult {
-        return noteRemoteSource.updateNote(body = body)
+    suspend fun updateNote(noteId: String, body: JsonObject): NoteResult {
+        return noteRemoteSource.updateNote(noteId = noteId, body = body)
     }
 
-    suspend fun deleteNote(id: String): NoteResult {
-        return noteRemoteSource.deleteNote(id)
+    suspend fun deleteNote(noteId: String): NoteResult {
+        return noteRemoteSource.deleteNote(noteId = noteId)
     }
 }

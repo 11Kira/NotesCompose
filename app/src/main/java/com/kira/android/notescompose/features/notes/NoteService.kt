@@ -24,6 +24,7 @@ interface NoteService {
 
     @PUT("/notes/{id}")
     suspend fun updateNote(
+        @Path("id") id: String,
         @Body body: JsonObject
     ): NoteResult
 
