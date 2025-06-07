@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -97,7 +98,7 @@ fun PopulateNoteListScreen(list: List<NoteResult>) {
             items(list) { note ->
                 NoteItem(
                     note,
-                    { },
+                    { noteid -> Log.e("note id", noteid) },
                     { },
                     { }
                 )
@@ -116,6 +117,7 @@ fun NoteItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .height(110.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .border(
                 width = 1.dp,
@@ -126,7 +128,9 @@ fun NoteItem(
             .clickable { onItemClicked.invoke(note.id) },
     ) {
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp)
         ) {
             Text(
                 text = note.title,
@@ -139,10 +143,12 @@ fun NoteItem(
 
             Row {
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        onEditClick.invoke(note.id)
+                    },
                     modifier = Modifier
-                        .width(18.dp)
-                        .height(18.dp)
+                        .width(20.dp)
+                        .height(20.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
@@ -152,9 +158,12 @@ fun NoteItem(
                 }
 
                 IconButton(
-                    onClick = {}, modifier = Modifier
-                        .width(18.dp)
-                        .height(18.dp)
+                    onClick = {
+                        onDeleteClick.invoke(note.id)
+                    },
+                    modifier = Modifier
+                        .width(20.dp)
+                        .height(20.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
