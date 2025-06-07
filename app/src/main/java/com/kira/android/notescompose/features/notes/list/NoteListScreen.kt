@@ -1,5 +1,6 @@
 package com.kira.android.notescompose.features.notes.list
 
+import android.graphics.Typeface
 import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,9 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,18 +48,14 @@ fun NoteListScreen() {
 @Composable
 fun MainScreen(sharedFlow: SharedFlow<NoteListState>) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    var notesList = remember { mutableStateListOf<NoteResult>() }
+    val notesList = remember { mutableStateListOf<NoteResult>() }
 
     LaunchedEffect(key1 = Unit) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             sharedFlow.collect { state ->
                 when (state) {
                     is NoteListState.SetNotesList -> {
-                        /*notesList = state.notes.toMutableStateList()
-                        Log.e("test count", state.notes.size.toString())*/
-                        state.notes.forEach {
-                            notesList.add(it)
-                        }
+                        notesList.addAll(state.notes)
                     }
 
                     is NoteListState.ShowError -> {
@@ -73,12 +73,12 @@ fun MainScreen(sharedFlow: SharedFlow<NoteListState>) {
 fun PopulateNoteListScreen(list: List<NoteResult>) {
     Column {
         Text(
-            modifier = Modifier
-                .padding(16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = "Notes",
             style = TextStyle(
                 color = Color("#FFA500".toColorInt()),
-                fontSize = 20.sp
+                fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD),
+                fontSize = 25.sp
             )
         )
         LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -105,11 +105,18 @@ fun NoteItem(note: NoteResult) {
         Text(
             text = note.title,
             style = TextStyle(
-                color = Color("#FFA500".toColorInt())
+                fontSize = 14.sp,
+                color = Color("#FFA500".toColorInt()),
+                fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD)
             )
         )
         Text(
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 10.dp),
+            style = TextStyle(
+                fontSize = 12.sp,
+            ),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
             text = note.body
         )
     }
