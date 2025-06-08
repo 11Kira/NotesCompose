@@ -81,8 +81,7 @@ fun PopulateNote(selectedNote: NoteResult?) {
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            modifier = Modifier
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.padding(16.dp),
             text = if (selectedNote != null) "Edit Note" else "Add Note",
             style = TextStyle(
                 color = Color("#FFA500".toColorInt()),

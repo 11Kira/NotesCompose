@@ -74,7 +74,7 @@ fun MainScreen(onItemClicked: (String) -> Unit) {
 fun PopulateNoteListScreen(list: List<NoteResult>, onItemClicked: (String) -> Unit) {
     Column {
         Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(16.dp),
             text = "Notes",
             style = TextStyle(
                 color = Color("#FFA500".toColorInt()),
