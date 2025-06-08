@@ -105,7 +105,7 @@ fun NoteItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(110.dp)
+            .height(130.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .border(
                 width = 1.dp,
@@ -165,9 +165,9 @@ fun NoteItem(
         Text(
             modifier = Modifier.padding(top = 10.dp),
             style = TextStyle(
-                fontSize = 12.sp,
+                fontSize = 14.sp,
             ),
-            maxLines = 2,
+            maxLines = 3,
             overflow = TextOverflow.Ellipsis,
             text = note.body
         )
