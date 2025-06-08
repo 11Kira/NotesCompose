@@ -1,6 +1,7 @@
 package com.kira.android.notescompose.features.notes.details
 
 import android.graphics.Typeface
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,7 +59,9 @@ fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
                         selectedNote = state.note
                     }
 
-                    is NoteState.ShowError -> {}
+                    is NoteState.ShowError -> {
+                        Log.e("test", state.error.toString())
+                    }
                 }
             }
         }

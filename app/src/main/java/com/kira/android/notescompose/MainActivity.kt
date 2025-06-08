@@ -57,7 +57,9 @@ fun MainScreenView() {
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = {
+                    // navController.navigate("${Graph.NOTE_GRAPH}/${""}")
+                },
                 containerColor = Color("#FFA500".toColorInt())
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Note")
