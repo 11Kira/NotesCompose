@@ -74,8 +74,13 @@ fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
 
 @Composable
 fun PopulateNote(selectedNote: NoteResult?) {
-    var noteTitle by remember { mutableStateOf("") }
-    var noteBody by remember { mutableStateOf("") }
+    var selectedNoteTitle by remember { mutableStateOf("") }
+    var selectedNoteBody by remember { mutableStateOf("") }
+
+    LaunchedEffect(key1 = selectedNote) {
+        selectedNoteTitle = selectedNote?.title ?: ""
+        selectedNoteBody = selectedNote?.body ?: ""
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -91,8 +96,8 @@ fun PopulateNote(selectedNote: NoteResult?) {
         )
 
         OutlinedTextField(
-            value = selectedNote?.title ?: "",
-            onValueChange = { },
+            value = selectedNoteTitle,
+            onValueChange = { newTitle -> selectedNoteTitle = newTitle },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -118,8 +123,8 @@ fun PopulateNote(selectedNote: NoteResult?) {
         )
 
         OutlinedTextField(
-            value = selectedNote?.body ?: "",
-            onValueChange = { },
+            value = selectedNoteBody,
+            onValueChange = { newBody -> selectedNoteBody = newBody },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
