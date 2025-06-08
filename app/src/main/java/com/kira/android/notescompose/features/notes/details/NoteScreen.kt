@@ -112,7 +112,7 @@ fun PopulateNote(selectedNote: NoteResult?) {
                         color = Color("#FFA500".toColorInt()),
                         fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD)
                     ),
-                    text = ""
+                    text = "Title"
                 )
             }
         )
@@ -131,6 +131,16 @@ fun PopulateNote(selectedNote: NoteResult?) {
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
             ),
+            label = {
+                Text(
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        color = Color("#FFA500".toColorInt()),
+                        fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD)
+                    ),
+                    text = "Description"
+                )
+            }
         )
     }
 }
