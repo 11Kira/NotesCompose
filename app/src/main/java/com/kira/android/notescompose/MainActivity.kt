@@ -19,11 +19,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.kira.android.notescompose.Graph.NOTE_SCREEN_ROUTE
 import com.kira.android.notescompose.features.notes.details.NoteScreen
 import com.kira.android.notescompose.features.notes.list.NoteListScreen
 import com.kira.android.notescompose.ui.theme.NotesComposeTheme
@@ -44,15 +54,21 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreenView() {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
         modifier = Modifier.safeDrawingPadding(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {},
-                containerColor = Color("#FFA500".toColorInt())
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Note")
+            if (currentRoute == "note_list") {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate("${Graph.NOTE_GRAPH}/${""}")
+                    },
+                    containerColor = Color("#FFA500".toColorInt())
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Note")
+                }
             }
         }
     ) { contentPadding ->
@@ -62,7 +78,48 @@ fun MainScreenView() {
             .consumeWindowInsets(contentPadding)
             .systemBarsPadding()
         ) {
-            NoteListScreen()
+            NavigationGraph(navController)
         }
     }
+}
+
+@Composable
+fun NavigationGraph(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "note_list"
+    ) {
+        composable("note_list") {
+            NoteListScreen(
+                onItemClicked = { noteId ->
+                    navController.navigate("${Graph.NOTE_GRAPH}/${noteId}")
+                }
+            )
+        }
+        noteNavGraph()
+    }
+}
+
+fun NavGraphBuilder.noteNavGraph() {
+    navigation(
+        route = "${Graph.NOTE_GRAPH}/{id}",
+        startDestination = NOTE_SCREEN_ROUTE
+    ) {
+        composable(
+            route = NOTE_SCREEN_ROUTE,
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val id = it.arguments?.getString("id")
+            NoteScreen(id)
+        }
+    }
+}
+
+object Graph {
+    const val NOTE_GRAPH = "note_graph"
+    const val NOTE_SCREEN_ROUTE = "note/{id}"
 }

@@ -1,6 +1,7 @@
 package com.kira.android.notescompose.features.notes.details
 
 import android.graphics.Typeface
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -40,7 +43,9 @@ lateinit var viewModel: NoteViewModel
 fun NoteScreen(noteId: String?) {
     viewModel = hiltViewModel()
     MainScreen(viewModel.noteState)
-    noteId?.let { viewModel.getNoteById(it) }
+    noteId?.let {
+        if (it.isNotEmpty()) viewModel.getNoteById(it)
+    }
 }
 
 @Composable
@@ -56,7 +61,9 @@ fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
                         selectedNote = state.note
                     }
 
-                    is NoteState.ShowError -> {}
+                    is NoteState.ShowError -> {
+                        Log.e("test", state.error.toString())
+                    }
                 }
             }
         }
@@ -68,12 +75,13 @@ fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
 @Composable
 fun PopulateNote(selectedNote: NoteResult?) {
     var noteTitle by remember { mutableStateOf("") }
+    var noteBody by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            modifier = Modifier
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.padding(16.dp),
             text = if (selectedNote != null) "Edit Note" else "Add Note",
             style = TextStyle(
                 color = Color("#FFA500".toColorInt()),
@@ -82,56 +90,47 @@ fun PopulateNote(selectedNote: NoteResult?) {
             )
         )
 
-        BasicTextField(
+        OutlinedTextField(
             value = selectedNote?.title ?: "",
             onValueChange = { },
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .border(
-                    width = 1.dp,
-                    color = Color("#FFA500".toColorInt()),
-                    shape = RoundedCornerShape(11.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(11.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = Color.Black,
+                focusedBorderColor = Color("#FFA500".toColorInt()),
+                unfocusedBorderColor = Color("#FFA500".toColorInt()),
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+            ),
+            label = {
+                Text(
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        color = Color("#FFA500".toColorInt()),
+                        fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD)
+                    ),
+                    text = ""
                 )
-                .padding(16.dp),
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(
-                        text = "Enter the title",
-                        color = Color.Gray,
-                        fontSize = 16.sp
-                    )
-                }
             }
         )
 
-        BasicTextField(
+        OutlinedTextField(
             value = selectedNote?.body ?: "",
             onValueChange = { },
             modifier = Modifier
-                .fillMaxHeight()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .border(
-                    width = 1.dp,
-                    color = Color("#FFA500".toColorInt()),
-                    shape = RoundedCornerShape(11.dp)
-                )
-                .padding(16.dp),
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    Text(
-                        text = "Enter the description",
-                        color = Color.Gray,
-                        fontSize = 16.sp
-                    )
-                }
-            }
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(11.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = Color.Black,
+                focusedBorderColor = Color("#FFA500".toColorInt()),
+                unfocusedBorderColor = Color("#FFA500".toColorInt()),
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+            ),
         )
     }
 }
