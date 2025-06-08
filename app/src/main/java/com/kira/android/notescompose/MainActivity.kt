@@ -65,7 +65,8 @@ fun MainScreenView() {
                     onClick = {
                         navController.navigate("${Graph.NOTE_GRAPH}/${""}")
                     },
-                    containerColor = Color("#FFA500".toColorInt())
+                    containerColor = Color("#FFA500".toColorInt()),
+                    contentColor = Color.White
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Note")
                 }
