@@ -62,7 +62,7 @@ fun MainScreenView() {
             .consumeWindowInsets(contentPadding)
             .systemBarsPadding()
         ) {
-            NoteScreen(null)
+            NoteListScreen()
         }
     }
 }
