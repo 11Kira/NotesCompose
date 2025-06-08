@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -80,6 +81,8 @@ fun MainScreen(sharedFlow: SharedFlow<NoteState>, navController: NavHostControll
 fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
     var selectedNoteTitle by remember { mutableStateOf("") }
     var selectedNoteBody by remember { mutableStateOf("") }
+    var titleError by remember { mutableStateOf(false) }
+    var bodyError by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     LaunchedEffect(key1 = selectedNote) {
@@ -105,14 +108,22 @@ fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
 
             IconButton(
                 onClick = {
-                    if (selectedNote != null) {
-                        viewModel.updateNote(selectedNote.id, selectedNoteTitle, selectedNoteBody)
-                        Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
-                        navController.popBackStack()
-                    } else {
-                        viewModel.saveNewNote(selectedNoteTitle, selectedNoteBody)
-                        Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
-                        navController.popBackStack()
+                    titleError = selectedNoteTitle.isBlank()
+                    bodyError = selectedNoteBody.isBlank()
+                    if (!titleError && !bodyError) {
+                        if (selectedNote != null) {
+                            viewModel.updateNote(
+                                selectedNote.id,
+                                selectedNoteTitle,
+                                selectedNoteBody
+                            )
+                            Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        } else {
+                            viewModel.saveNewNote(selectedNoteTitle, selectedNoteBody)
+                            Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        }
                     }
                 },
                 modifier = Modifier
@@ -130,7 +141,10 @@ fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
 
         OutlinedTextField(
             value = selectedNoteTitle,
-            onValueChange = { newTitle -> selectedNoteTitle = newTitle },
+            onValueChange = { newTitle ->
+                selectedNoteTitle = newTitle
+                titleError = newTitle.isBlank()
+            },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -143,6 +157,7 @@ fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
             ),
+            isError = titleError,
             label = {
                 Text(
                     style = TextStyle(
@@ -152,12 +167,25 @@ fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
                     ),
                     text = "Title"
                 )
+            },
+            supportingText = {
+                if (titleError) {
+                    Text(
+                        text = "Title cannot be empty",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
+
         )
 
         OutlinedTextField(
             value = selectedNoteBody,
-            onValueChange = { newBody -> selectedNoteBody = newBody },
+            onValueChange = { newBody ->
+                selectedNoteBody = newBody
+                bodyError = newBody.isBlank()
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -169,6 +197,7 @@ fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
             ),
+            isError = bodyError,
             label = {
                 Text(
                     style = TextStyle(
@@ -178,6 +207,15 @@ fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
                     ),
                     text = "Description"
                 )
+            },
+            supportingText = {
+                if (bodyError) {
+                    Text(
+                        text = "Body cannot be empty",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
         )
     }
