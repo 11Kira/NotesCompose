@@ -122,7 +122,7 @@ fun PopulateNote(selectedNote: NoteResult?) {
             value = selectedNote?.body ?: "",
             onValueChange = { },
             modifier = Modifier
-                .fillMaxHeight()
+                .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             shape = RoundedCornerShape(11.dp),
             colors = OutlinedTextFieldDefaults.colors(
