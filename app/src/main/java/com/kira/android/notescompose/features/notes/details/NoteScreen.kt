@@ -2,20 +2,23 @@ package com.kira.android.notescompose.features.notes.details
 
 import android.graphics.Typeface
 import android.util.Log
-import androidx.compose.foundation.border
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -34,22 +38,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavHostController
 import com.kira.android.notescompose.features.notes.NoteResult
 import kotlinx.coroutines.flow.SharedFlow
 
 lateinit var viewModel: NoteViewModel
 
 @Composable
-fun NoteScreen(noteId: String?) {
+fun NoteScreen(noteId: String?, navController: NavHostController) {
     viewModel = hiltViewModel()
-    MainScreen(viewModel.noteState)
+    MainScreen(viewModel.noteState, navController)
     noteId?.let {
         if (it.isNotEmpty()) viewModel.getNoteById(it)
     }
 }
 
 @Composable
-fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
+fun MainScreen(sharedFlow: SharedFlow<NoteState>, navController: NavHostController) {
     val lifecycleOwner = LocalLifecycleOwner.current
     var selectedNote by remember { mutableStateOf<NoteResult?>(null) }
 
@@ -69,30 +74,77 @@ fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
         }
     }
 
-    PopulateNote(selectedNote)
+    PopulateNote(selectedNote, navController)
 }
 
 @Composable
-fun PopulateNote(selectedNote: NoteResult?) {
-    var noteTitle by remember { mutableStateOf("") }
-    var noteBody by remember { mutableStateOf("") }
+fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
+    var selectedNoteTitle by remember { mutableStateOf("") }
+    var selectedNoteBody by remember { mutableStateOf("") }
+    var titleError by remember { mutableStateOf(false) }
+    var bodyError by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = selectedNote) {
+        selectedNoteTitle = selectedNote?.title ?: ""
+        selectedNoteBody = selectedNote?.body ?: ""
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(
-            modifier = Modifier.padding(16.dp),
-            text = if (selectedNote != null) "Edit Note" else "Add Note",
-            style = TextStyle(
-                color = Color("#FFA500".toColorInt()),
-                fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD),
-                fontSize = 25.sp
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterStart),
+                text = if (selectedNote != null) "Edit Note" else "Add Note",
+                style = TextStyle(
+                    color = Color("#FFA500".toColorInt()),
+                    fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD),
+                    fontSize = 25.sp
+                )
             )
-        )
+
+            IconButton(
+                onClick = {
+                    titleError = selectedNoteTitle.isBlank()
+                    bodyError = selectedNoteBody.isBlank()
+                    if (!titleError && !bodyError) {
+                        if (selectedNote != null) {
+                            viewModel.updateNote(
+                                selectedNote.id,
+                                selectedNoteTitle,
+                                selectedNoteBody
+                            )
+                            Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        } else {
+                            viewModel.saveNewNote(selectedNoteTitle, selectedNoteBody)
+                            Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .width(35.dp)
+                    .height(35.dp)
+                    .align(Alignment.CenterEnd),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Save",
+                    tint = Color("#FFA500".toColorInt())
+                )
+            }
+        }
 
         OutlinedTextField(
-            value = selectedNote?.title ?: "",
-            onValueChange = { },
+            value = selectedNoteTitle,
+            onValueChange = { newTitle ->
+                selectedNoteTitle = newTitle
+                titleError = newTitle.isBlank()
+            },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,6 +157,7 @@ fun PopulateNote(selectedNote: NoteResult?) {
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
             ),
+            isError = titleError,
             label = {
                 Text(
                     style = TextStyle(
@@ -112,14 +165,27 @@ fun PopulateNote(selectedNote: NoteResult?) {
                         color = Color("#FFA500".toColorInt()),
                         fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD)
                     ),
-                    text = ""
+                    text = "Title"
                 )
+            },
+            supportingText = {
+                if (titleError) {
+                    Text(
+                        text = "Title cannot be empty",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
+
         )
 
         OutlinedTextField(
-            value = selectedNote?.body ?: "",
-            onValueChange = { },
+            value = selectedNoteBody,
+            onValueChange = { newBody ->
+                selectedNoteBody = newBody
+                bodyError = newBody.isBlank()
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -131,6 +197,26 @@ fun PopulateNote(selectedNote: NoteResult?) {
                 focusedTextColor = Color.Black,
                 unfocusedTextColor = Color.Black,
             ),
+            isError = bodyError,
+            label = {
+                Text(
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        color = Color("#FFA500".toColorInt()),
+                        fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD)
+                    ),
+                    text = "Description"
+                )
+            },
+            supportingText = {
+                if (bodyError) {
+                    Text(
+                        text = "Body cannot be empty",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
         )
     }
 }

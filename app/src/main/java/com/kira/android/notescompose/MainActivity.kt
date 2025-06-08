@@ -15,9 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -36,7 +34,6 @@ import androidx.navigation.navArgument
 import com.kira.android.notescompose.Graph.NOTE_SCREEN_ROUTE
 import com.kira.android.notescompose.features.notes.details.NoteScreen
 import com.kira.android.notescompose.features.notes.list.NoteListScreen
-import com.kira.android.notescompose.ui.theme.NotesComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -65,7 +62,8 @@ fun MainScreenView() {
                     onClick = {
                         navController.navigate("${Graph.NOTE_GRAPH}/${""}")
                     },
-                    containerColor = Color("#FFA500".toColorInt())
+                    containerColor = Color("#FFA500".toColorInt()),
+                    contentColor = Color.White
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Note")
                 }
@@ -96,11 +94,11 @@ fun NavigationGraph(navController: NavHostController) {
                 }
             )
         }
-        noteNavGraph()
+        noteNavGraph(navController)
     }
 }
 
-fun NavGraphBuilder.noteNavGraph() {
+fun NavGraphBuilder.noteNavGraph(navController: NavHostController) {
     navigation(
         route = "${Graph.NOTE_GRAPH}/{id}",
         startDestination = NOTE_SCREEN_ROUTE
@@ -114,7 +112,7 @@ fun NavGraphBuilder.noteNavGraph() {
             )
         ) {
             val id = it.arguments?.getString("id")
-            NoteScreen(id)
+            NoteScreen(id, navController)
         }
     }
 }

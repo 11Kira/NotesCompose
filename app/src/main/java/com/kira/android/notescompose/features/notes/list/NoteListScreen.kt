@@ -3,6 +3,7 @@ package com.kira.android.notescompose.features.notes.list
 import android.graphics.Typeface
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -56,6 +58,7 @@ fun MainScreen(onItemClicked: (String) -> Unit) {
             viewModel.noteListState.collect { state ->
                 when (state) {
                     is NoteListState.SetNotesList -> {
+                        notesList.clear()
                         notesList.addAll(state.notes)
                     }
 
@@ -86,9 +89,8 @@ fun PopulateNoteListScreen(list: List<NoteResult>, onItemClicked: (String) -> Un
             items(list) { note ->
                 NoteItem(
                     note,
-                    { noteid -> onItemClicked.invoke(noteid) },
-                    { },
-                    { }
+                    { noteId -> onItemClicked.invoke(noteId) },
+                    { noteId -> viewModel.deleteNoteById(noteId) }
                 )
             }
         }
@@ -99,13 +101,12 @@ fun PopulateNoteListScreen(list: List<NoteResult>, onItemClicked: (String) -> Un
 fun NoteItem(
     note: NoteResult,
     onItemClicked: (String) -> Unit,
-    onEditClick: (String) -> Unit,
     onDeleteClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(110.dp)
+            .height(130.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .border(
                 width = 1.dp,
@@ -115,12 +116,12 @@ fun NoteItem(
             .padding(16.dp)
             .clickable { onItemClicked.invoke(note.id) },
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(20.dp)
         ) {
             Text(
+                modifier = Modifier.align(Alignment.CenterStart),
                 text = note.title,
                 style = TextStyle(
                     fontSize = 18.sp,
@@ -129,22 +130,9 @@ fun NoteItem(
                 )
             )
 
-            Row {
-                IconButton(
-                    onClick = {
-                        onEditClick.invoke(note.id)
-                    },
-                    modifier = Modifier
-                        .width(20.dp)
-                        .height(20.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit",
-                        tint = Color("#FFA500".toColorInt())
-                    )
-                }
-
+            Row(
+                modifier = Modifier.align(Alignment.CenterEnd),
+            ) {
                 IconButton(
                     onClick = {
                         onDeleteClick.invoke(note.id)
@@ -165,9 +153,9 @@ fun NoteItem(
         Text(
             modifier = Modifier.padding(top = 10.dp),
             style = TextStyle(
-                fontSize = 12.sp,
+                fontSize = 14.sp,
             ),
-            maxLines = 2,
+            maxLines = 3,
             overflow = TextOverflow.Ellipsis,
             text = note.body
         )
