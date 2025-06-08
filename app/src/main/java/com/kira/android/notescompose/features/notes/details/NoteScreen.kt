@@ -2,6 +2,7 @@ package com.kira.android.notescompose.features.notes.details
 
 import android.graphics.Typeface
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -82,6 +84,7 @@ fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
 fun PopulateNote(selectedNote: NoteResult?) {
     var selectedNoteTitle by remember { mutableStateOf("") }
     var selectedNoteBody by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = selectedNote) {
         selectedNoteTitle = selectedNote?.title ?: ""
@@ -108,8 +111,10 @@ fun PopulateNote(selectedNote: NoteResult?) {
                 onClick = {
                     if (selectedNote != null) {
                         viewModel.updateNote(selectedNote.id, selectedNoteTitle, selectedNoteBody)
+                        Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.saveNewNote(selectedNoteTitle, selectedNoteBody)
+                        Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier
