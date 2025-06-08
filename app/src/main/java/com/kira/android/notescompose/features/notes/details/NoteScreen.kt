@@ -10,8 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -85,15 +91,39 @@ fun PopulateNote(selectedNote: NoteResult?) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(
-            modifier = Modifier.padding(16.dp),
-            text = if (selectedNote != null) "Edit Note" else "Add Note",
-            style = TextStyle(
-                color = Color("#FFA500".toColorInt()),
-                fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD),
-                fontSize = 25.sp
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterStart),
+                text = if (selectedNote != null) "Edit Note" else "Add Note",
+                style = TextStyle(
+                    color = Color("#FFA500".toColorInt()),
+                    fontFamily = FontFamily(typeface = Typeface.DEFAULT_BOLD),
+                    fontSize = 25.sp
+                )
             )
-        )
+
+            IconButton(
+                onClick = {
+                    if (selectedNote != null) {
+                        viewModel.updateNote(selectedNote.id, selectedNoteTitle, selectedNoteBody)
+                    } else {
+                        viewModel.saveNewNote(selectedNoteTitle, selectedNoteBody)
+                    }
+                },
+                modifier = Modifier
+                    .width(35.dp)
+                    .height(35.dp)
+                    .align(Alignment.CenterEnd),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Save",
+                    tint = Color("#FFA500".toColorInt())
+                )
+            }
+        }
 
         OutlinedTextField(
             value = selectedNoteTitle,
