@@ -3,26 +3,21 @@ package com.kira.android.notescompose.features.notes.details
 import android.graphics.Typeface
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,22 +37,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavHostController
 import com.kira.android.notescompose.features.notes.NoteResult
 import kotlinx.coroutines.flow.SharedFlow
 
 lateinit var viewModel: NoteViewModel
 
 @Composable
-fun NoteScreen(noteId: String?) {
+fun NoteScreen(noteId: String?, navController: NavHostController) {
     viewModel = hiltViewModel()
-    MainScreen(viewModel.noteState)
+    MainScreen(viewModel.noteState, navController)
     noteId?.let {
         if (it.isNotEmpty()) viewModel.getNoteById(it)
     }
 }
 
 @Composable
-fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
+fun MainScreen(sharedFlow: SharedFlow<NoteState>, navController: NavHostController) {
     val lifecycleOwner = LocalLifecycleOwner.current
     var selectedNote by remember { mutableStateOf<NoteResult?>(null) }
 
@@ -77,11 +73,11 @@ fun MainScreen(sharedFlow: SharedFlow<NoteState>) {
         }
     }
 
-    PopulateNote(selectedNote)
+    PopulateNote(selectedNote, navController)
 }
 
 @Composable
-fun PopulateNote(selectedNote: NoteResult?) {
+fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
     var selectedNoteTitle by remember { mutableStateOf("") }
     var selectedNoteBody by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -112,9 +108,11 @@ fun PopulateNote(selectedNote: NoteResult?) {
                     if (selectedNote != null) {
                         viewModel.updateNote(selectedNote.id, selectedNoteTitle, selectedNoteBody)
                         Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
                     } else {
                         viewModel.saveNewNote(selectedNoteTitle, selectedNoteBody)
                         Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
                     }
                 },
                 modifier = Modifier
