@@ -36,7 +36,7 @@ class NoteListViewModel @Inject constructor(
                 mutableNoteListState.emit(NoteListState.ShowError(error))
             }
         }) {
-            async { useCase.deleteNote(noteId) }.await()
+            useCase.deleteNote(noteId)
             getAllNotes()
         }
     }

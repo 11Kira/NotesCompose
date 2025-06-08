@@ -58,6 +58,7 @@ fun MainScreen(onItemClicked: (String) -> Unit) {
             viewModel.noteListState.collect { state ->
                 when (state) {
                     is NoteListState.SetNotesList -> {
+                        notesList.clear()
                         notesList.addAll(state.notes)
                     }
 
@@ -88,9 +89,8 @@ fun PopulateNoteListScreen(list: List<NoteResult>, onItemClicked: (String) -> Un
             items(list) { note ->
                 NoteItem(
                     note,
-                    { noteid -> onItemClicked.invoke(noteid) },
-                    { },
-                    { }
+                    { noteId -> onItemClicked.invoke(noteId) },
+                    { noteId -> viewModel.deleteNoteById(noteId) }
                 )
             }
         }
@@ -101,7 +101,6 @@ fun PopulateNoteListScreen(list: List<NoteResult>, onItemClicked: (String) -> Un
 fun NoteItem(
     note: NoteResult,
     onItemClicked: (String) -> Unit,
-    onEditClick: (String) -> Unit,
     onDeleteClick: (String) -> Unit
 ) {
     Column(
@@ -134,21 +133,6 @@ fun NoteItem(
             Row(
                 modifier = Modifier.align(Alignment.CenterEnd),
             ) {
-                IconButton(
-                    onClick = {
-                        onEditClick.invoke(note.id)
-                    },
-                    modifier = Modifier
-                        .width(20.dp)
-                        .height(20.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit",
-                        tint = Color("#FFA500".toColorInt())
-                    )
-                }
-
                 IconButton(
                     onClick = {
                         onDeleteClick.invoke(note.id)

@@ -13,8 +13,9 @@ class NoteRemoteSource @Inject constructor(
     suspend fun getNoteById(noteId: String) =
         withContext(Dispatchers.IO) { noteService.getNoteById(id = noteId) }
 
-    suspend fun deleteNote(noteId: String) =
+    suspend fun deleteNote(noteId: String) {
         withContext(Dispatchers.IO) { noteService.deleteNote(id = noteId) }
+    }
 
     suspend fun saveNote(body: JsonObject) =
         withContext(Dispatchers.IO) { noteService.saveNote(body = body) }

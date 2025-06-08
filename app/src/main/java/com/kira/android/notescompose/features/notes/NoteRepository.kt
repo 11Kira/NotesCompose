@@ -1,6 +1,7 @@
 package com.kira.android.notescompose.features.notes
 
 import com.google.gson.JsonObject
+import retrofit2.Response
 import javax.inject.Inject
 
 class NoteRepository @Inject constructor(
@@ -22,7 +23,7 @@ class NoteRepository @Inject constructor(
         return noteRemoteSource.updateNote(noteId = noteId, body = body)
     }
 
-    suspend fun deleteNote(noteId: String): NoteResult {
+    suspend fun deleteNote(noteId: String) {
         return noteRemoteSource.deleteNote(noteId = noteId)
     }
 }
