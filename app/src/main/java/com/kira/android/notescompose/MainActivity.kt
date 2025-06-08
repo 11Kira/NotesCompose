@@ -23,7 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.kira.android.notescompose.Graph.NOTE_SCREEN_ROUTE
 import com.kira.android.notescompose.features.notes.details.NoteScreen
 import com.kira.android.notescompose.features.notes.list.NoteListScreen
 import com.kira.android.notescompose.ui.theme.NotesComposeTheme
@@ -62,7 +70,48 @@ fun MainScreenView() {
             .consumeWindowInsets(contentPadding)
             .systemBarsPadding()
         ) {
-            NoteListScreen()
+            NavigationGraph(navController)
         }
     }
+}
+
+@Composable
+fun NavigationGraph(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "note_list"
+    ) {
+        composable("note_list") {
+            NoteListScreen(
+                onItemClicked = { noteId ->
+                    navController.navigate("${Graph.NOTE_GRAPH}/${noteId}")
+                }
+            )
+        }
+        noteNavGraph()
+    }
+}
+
+fun NavGraphBuilder.noteNavGraph() {
+    navigation(
+        route = "${Graph.NOTE_GRAPH}/{id}",
+        startDestination = NOTE_SCREEN_ROUTE
+    ) {
+        composable(
+            route = NOTE_SCREEN_ROUTE,
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val id = it.arguments?.getString("id")
+            NoteScreen(id)
+        }
+    }
+}
+
+object Graph {
+    const val NOTE_GRAPH = "note_graph"
+    const val NOTE_SCREEN_ROUTE = "note/{id}"
 }
