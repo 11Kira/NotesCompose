@@ -43,7 +43,9 @@ lateinit var viewModel: NoteViewModel
 fun NoteScreen(noteId: String?) {
     viewModel = hiltViewModel()
     MainScreen(viewModel.noteState)
-    noteId?.let { viewModel.getNoteById(it) }
+    noteId?.let {
+        if (it.isNotEmpty()) viewModel.getNoteById(it)
+    }
 }
 
 @Composable

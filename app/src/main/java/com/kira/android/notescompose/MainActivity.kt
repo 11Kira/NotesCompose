@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +29,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
@@ -52,17 +54,21 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreenView() {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
         modifier = Modifier.safeDrawingPadding(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    // navController.navigate("${Graph.NOTE_GRAPH}/${""}")
-                },
-                containerColor = Color("#FFA500".toColorInt())
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Note")
+            if (currentRoute == "note_list") {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate("${Graph.NOTE_GRAPH}/${""}")
+                    },
+                    containerColor = Color("#FFA500".toColorInt())
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Note")
+                }
             }
         }
     ) { contentPadding ->
