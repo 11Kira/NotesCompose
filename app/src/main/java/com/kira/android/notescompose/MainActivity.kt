@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.graphics.toColorInt
 import androidx.navigation.compose.rememberNavController
+import com.kira.android.notescompose.features.notes.details.NoteScreen
 import com.kira.android.notescompose.features.notes.list.NoteListScreen
 import com.kira.android.notescompose.ui.theme.NotesComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,7 +62,7 @@ fun MainScreenView() {
             .consumeWindowInsets(contentPadding)
             .systemBarsPadding()
         ) {
-            NoteListScreen()
+            NoteScreen(null)
         }
     }
 }
