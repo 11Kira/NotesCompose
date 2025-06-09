@@ -117,7 +117,7 @@ fun PopulateNote(selectedNote: NoteResult?, navController: NavHostController) {
                                 selectedNoteTitle,
                                 selectedNoteBody
                             )
-                            Toast.makeText(context, "Note saved!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Note updated!", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         } else {
                             viewModel.saveNewNote(selectedNoteTitle, selectedNoteBody)
